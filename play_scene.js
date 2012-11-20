@@ -33,6 +33,9 @@
 
   };
 
+  play_scene.keyPressed = function(code, event) {
+  };
+
 
   play_scene.init();
   return play_scene

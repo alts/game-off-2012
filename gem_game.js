@@ -17,7 +17,7 @@ var obj = require('test_obj.js');
 
 core.scene = play_scene;
 
-core.update = function (dt) {
+core.update = function(dt) {
   if (this.scene) {
     this.scene.update(dt);
   }
@@ -29,7 +29,13 @@ core.draw = function() {
   }
 };
 
-core.register_scene = function(scene) {
+core.keyPressed = function(event) {
+  if (this.scene) {
+    this.scene.keyPressed(event.keyCode || event.charCode, event);
+  }
+};
+
+core.registerScene = function(scene) {
   this.scene = scene
 };
 
@@ -42,3 +48,7 @@ function step(time) {
   requestAnimationFrame(step);
 }
 requestAnimationFrame(step);
+
+document.body.addEventListener('keypress', function (e) {
+  core.keyPressed(e);
+});
