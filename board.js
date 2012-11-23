@@ -1,8 +1,20 @@
 (function() {
+  var block = require('block.js');
+  var push_block = require('push.js');
   var board = {},
       BLOCK_SIZE = 100,
       CURSOR_SIZE = 20,
       cursor = [1, 0];
+
+  board.init = function(){
+    this.blocks = [
+      Object.create(block).init(0, 6),
+      Object.create(block).init(1, 6),
+      Object.create(block).init(3, 6),
+      Object.create(push_block).init(4, 6)
+    ];
+    return this;
+  };
 
   board.keyPressed = function(code, event) {
     if (code == 119) {
@@ -55,6 +67,10 @@
     core.ctx.lineTo(x + BLOCK_SIZE, y + CURSOR_SIZE);
 
     core.ctx.stroke();
+
+    for (var i = 0, l = this.blocks.length; i < l; i++) {
+      this.blocks[i].draw(120, 10);
+    }
   };
 
   return board;

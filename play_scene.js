@@ -1,16 +1,10 @@
 (function() {
   var board = require('board.js');
-  var block = require('block.js');
-  var push_block = require('push.js');
   var play_scene = {};
 
   play_scene.init = function() {
-    this.blocks = [
-      Object.create(block).init(0, 6),
-      Object.create(block).init(1, 6),
-      Object.create(block).init(3, 6),
-      Object.create(push_block).init(4, 6)
-    ];
+    this.board = Object.create(board).init();
+    return this;
   };
 
   play_scene.draw = function(offset_x, offset_y) {
@@ -27,11 +21,7 @@
     // chute
     core.ctx.strokeRect(1160, 10, 100, 600);
 
-    for (var i = 0, l = this.blocks.length; i < l; i++) {
-      this.blocks[i].draw(120, 10);
-    }
-
-    board.draw(10, 10);
+    this.board.draw(10, 10);
   };
 
   play_scene.update = function(dt) {
@@ -39,9 +29,8 @@
   };
 
   play_scene.keyPressed = function(code, event) {
-    board.keyPressed(code, event);
+    this.board.keyPressed(code, event);
   };
 
-  play_scene.init();
-  return play_scene
+  return play_scene.init();
 })();
