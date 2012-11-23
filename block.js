@@ -1,12 +1,9 @@
 (function(){
-  var pushed_block = require('pushed_block.js');
   var block = {},
       BLOCK_SIZE = 100,
       BLOCK_QUAD = 25;
 
-  block.init = function(x, y){
-    this.gx = x;
-    this.gy = y;
+  block.init = function(){
     return this;
   };
 
@@ -15,8 +12,23 @@
   };
 
   block.push = function(){
-    var new_block = Object.create(pushed_block).init(this);
-    return new_block;
+    this.dy = 0;
+    this.vy = 1/1000;
+    this.update = this.update_moving;
+    this.draw = this.draw_moving;
+  };
+
+  block.update_moving = function(dt){
+    this.dy -= this.vy * dt;
+  };
+
+  block.update_fixed = function(dt){
+  };
+
+  block.update = block.update_fixed;
+
+  block.draw_moving = function(offset_x, offset_y){
+    return this.draw_fixed(offset_x, offset_y + this.dy);
   };
 
   block.draw_fixed = function(offset_x, offset_y){

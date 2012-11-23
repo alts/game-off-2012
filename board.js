@@ -20,7 +20,13 @@
   };
 
   board.keyPressed = function(code, event) {
-    this.cursor.keyPressed(code, event);
+    if (code == 101) {
+      if (this.columns[this.cursor.x - 1].length > 6 - this.cursor.y) {
+        this.columns[this.cursor.x - 1][6 - this.cursor.y].push();
+      }
+    } else {
+      this.cursor.keyPressed(code, event);
+    }
   };
 
   board.draw = function(offset_x, offset_y) {
@@ -50,6 +56,13 @@
 
   board.update = function(dt){
     this.cursor.update(dt);
+
+    for (var i = 0, l = this.columns.length; i < l; i++) {
+      var column = this.columns[i];
+      for (var j = 0, ll = column.length; j < ll; j++) {
+        column[j].update(dt);
+      }
+    }
   };
 
   return board;

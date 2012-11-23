@@ -11,7 +11,6 @@
   };
 
   cursor.keyPressed = function(code, event){
-    console.log(this);
     if (code == 119) {
       // W
       if (this.y > 0) {
