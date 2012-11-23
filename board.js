@@ -5,14 +5,16 @@
       BLOCK_SIZE = 100,
       CURSOR_SIZE = 20,
       cursor = [1, 0];
+  var chute = require('chute.js');
 
   board.init = function(){
     this.blocks = [
       Object.create(block).init(0, 6),
       Object.create(block).init(1, 6),
       Object.create(block).init(3, 6),
-      Object.create(push_block).init(4, 6)
+      Object.create(block).init(4, 6)
     ];
+    this.chute = Object.create(chute).init();
     return this;
   };
 
@@ -48,6 +50,16 @@
       x += 10;
     }
 
+    for (var i = 0, l = this.blocks.length; i < l; i++) {
+      var block = this.blocks[i];
+      this.blocks[i].draw(
+        offset_x + 110 + block.gx * BLOCK_SIZE,
+        offset_y + block.gy * BLOCK_SIZE
+      );
+    }
+
+    this.chute.draw(offset_x, offset_y);
+
     core.ctx.strokeStyle = 'rgb(255, 0, 255)';
     core.ctx.beginPath();
     core.ctx.moveTo(x + CURSOR_SIZE, y);
@@ -67,14 +79,6 @@
     core.ctx.lineTo(x + BLOCK_SIZE, y + CURSOR_SIZE);
 
     core.ctx.stroke();
-
-    for (var i = 0, l = this.blocks.length; i < l; i++) {
-      var block = this.blocks[i];
-      this.blocks[i].draw(
-        offset_x + 110 + block.gx * BLOCK_SIZE,
-        offset_y + block.gy * BLOCK_SIZE
-      );
-    }
   };
 
   return board;
