@@ -19,7 +19,7 @@
     return new_block;
   };
 
-  block.draw = function(offset_x, offset_y){
+  block.draw_fixed = function(offset_x, offset_y){
     var start_x = offset_x,
         start_y = offset_y;
 
@@ -75,6 +75,8 @@
       BLOCK_SIZE
     );
   };
+
+  block.draw = block.draw_fixed;
 
   return block;
 })();
