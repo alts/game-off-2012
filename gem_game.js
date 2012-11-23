@@ -43,6 +43,8 @@ var start = Date.now();
 function step(time) {
   var dt = time - start;
   core.ctx.clearRect(0, 0, 1300, 720);
+  core.ctx.fillStyle = '#666';
+  core.ctx.fillRect(0, 0, 1300, 720);
   core.update(dt);
   core.draw();
   requestAnimationFrame(step);
