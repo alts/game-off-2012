@@ -1,10 +1,9 @@
 (function() {
   var block = require('block.js');
   var push_block = require('push.js');
+  var cursor = require('cursor.js');
   var board = {},
-      BLOCK_SIZE = 100,
-      CURSOR_SIZE = 20,
-      cursor = [1, 0];
+      BLOCK_SIZE = 100;
   var chute = require('chute.js');
 
   board.init = function(){
@@ -15,41 +14,15 @@
       Object.create(block).init(4, 6)
     ];
     this.chute = Object.create(chute).init();
+    this.cursor = Object.create(cursor).init();
     return this;
   };
 
   board.keyPressed = function(code, event) {
-    if (code == 119) {
-      // W
-      if (cursor[1] > 0) {
-        cursor[1]--;
-      }
-    } else if (code == 97) {
-      // A
-      if (cursor[0] > 0 && !(cursor[0] == 1 && cursor[1] == 6)) {
-        cursor[0]--;
-      }
-    } else if (code == 115) {
-      // S
-      if (cursor[1] < 6 && !(cursor[0] == 0 && cursor[1] == 5)) {
-        cursor[1]++;
-      }
-    } else if (code == 100) {
-      // D
-      if (cursor[0] < 5) {
-        cursor[0]++;
-      }
-    }
+    this.cursor.keyPressed(code, event);
   };
 
   board.draw = function(offset_x, offset_y) {
-    var x = offset_x + BLOCK_SIZE * cursor[0],
-        y = offset_y + BLOCK_SIZE * cursor[1];
-
-    if (cursor[0] > 0) {
-      x += 10;
-    }
-
     for (var i = 0, l = this.blocks.length; i < l; i++) {
       var block = this.blocks[i];
       this.blocks[i].draw(
@@ -60,25 +33,11 @@
 
     this.chute.draw(offset_x, offset_y);
 
-    core.ctx.strokeStyle = 'rgb(255, 0, 255)';
-    core.ctx.beginPath();
-    core.ctx.moveTo(x + CURSOR_SIZE, y);
-    core.ctx.lineTo(x, y);
-    core.ctx.lineTo(x, y + CURSOR_SIZE);
+    this.cursor.draw(offset_x, offset_y);
+  };
 
-    core.ctx.moveTo(x, y + BLOCK_SIZE - CURSOR_SIZE);
-    core.ctx.lineTo(x, y + BLOCK_SIZE);
-    core.ctx.lineTo(x + CURSOR_SIZE, y + BLOCK_SIZE);
-
-    core.ctx.moveTo(x + BLOCK_SIZE - CURSOR_SIZE, y + BLOCK_SIZE);
-    core.ctx.lineTo(x + BLOCK_SIZE, y + BLOCK_SIZE);
-    core.ctx.lineTo(x + BLOCK_SIZE, y + BLOCK_SIZE - CURSOR_SIZE);
-
-    core.ctx.moveTo(x + BLOCK_SIZE - CURSOR_SIZE, y);
-    core.ctx.lineTo(x + BLOCK_SIZE, y);
-    core.ctx.lineTo(x + BLOCK_SIZE, y + CURSOR_SIZE);
-
-    core.ctx.stroke();
+  board.update = function(dt){
+    this.cursor.update(dt);
   };
 
   return board;

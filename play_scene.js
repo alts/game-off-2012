@@ -25,7 +25,7 @@
   };
 
   play_scene.update = function(dt) {
-
+    this.board.update(dt);
   };
 
   play_scene.keyPressed = function(code, event) {
