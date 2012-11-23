@@ -23,6 +23,13 @@
   };
 
   board.draw = function(offset_x, offset_y) {
+    core.ctx.save();
+    core.ctx.beginPath();
+    core.ctx.rect(
+      offset_x + 110, offset_y,
+      500, 700
+    );
+    core.ctx.clip();
     for (var i = 0, l = this.blocks.length; i < l; i++) {
       var block = this.blocks[i];
       this.blocks[i].draw(
@@ -30,6 +37,8 @@
         offset_y + block.gy * BLOCK_SIZE
       );
     }
+
+    core.ctx.restore();
 
     this.chute.draw(offset_x, offset_y);
 
