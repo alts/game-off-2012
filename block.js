@@ -1,4 +1,5 @@
 (function(){
+  var pushed_block = require('pushed_block.js');
   var block = {},
       BLOCK_SIZE = 100,
       BLOCK_QUAD = 25;
@@ -11,6 +12,11 @@
 
   block.setFillStyle = function(){
     core.ctx.fillStyle = "rgb(100, 0, 0)";
+  };
+
+  block.push = function(){
+    var new_block = Object.create(pushed_block).init(this);
+    return new_block;
   };
 
   block.draw = function(offset_x, offset_y){
