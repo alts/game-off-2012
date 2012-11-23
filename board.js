@@ -7,11 +7,12 @@
   var chute = require('chute.js');
 
   board.init = function(){
-    this.blocks = [
-      Object.create(block).init(0, 6),
-      Object.create(block).init(1, 6),
-      Object.create(block).init(3, 6),
-      Object.create(block).init(4, 6)
+    this.columns = [
+      [Object.create(block)],
+      [Object.create(block)],
+      [],
+      [Object.create(block)],
+      [Object.create(block)]
     ];
     this.chute = Object.create(chute).init();
     this.cursor = Object.create(cursor).init();
@@ -30,12 +31,14 @@
       500, 700
     );
     core.ctx.clip();
-    for (var i = 0, l = this.blocks.length; i < l; i++) {
-      var block = this.blocks[i];
-      this.blocks[i].draw(
-        offset_x + 110 + block.gx * BLOCK_SIZE,
-        offset_y + block.gy * BLOCK_SIZE
-      );
+    for (var i = 0, l = this.columns.length; i < l; i++) {
+      var column = this.columns[i];
+      for (var j = 0, ll = column.length; j < ll; j++) {
+        column[j].draw(
+          offset_x + 110 + i * BLOCK_SIZE,
+          offset_y + (6 - j) * BLOCK_SIZE
+        );
+      }
     }
 
     core.ctx.restore();
