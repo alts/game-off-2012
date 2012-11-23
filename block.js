@@ -14,8 +14,8 @@
   };
 
   block.draw = function(offset_x, offset_y){
-    var start_x = offset_x + this.gx * BLOCK_SIZE,
-        start_y = offset_y + this.gy * BLOCK_SIZE;
+    var start_x = offset_x,
+        start_y = offset_y;
 
     this.setFillStyle();
     core.ctx.fillRect(

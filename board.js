@@ -69,7 +69,11 @@
     core.ctx.stroke();
 
     for (var i = 0, l = this.blocks.length; i < l; i++) {
-      this.blocks[i].draw(120, 10);
+      var block = this.blocks[i];
+      this.blocks[i].draw(
+        offset_x + 110 + block.gx * BLOCK_SIZE,
+        offset_y + block.gy * BLOCK_SIZE
+      );
     }
   };
 
