@@ -1,7 +1,7 @@
 (function() {
   var board = require('board.js');
   var block = require('block.js');
-  push_block = require('push.js');
+  var push_block = require('push.js');
   var play_scene = {};
 
   play_scene.init = function() {
