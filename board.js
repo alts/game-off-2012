@@ -14,15 +14,22 @@
       [Object.create(block)],
       [Object.create(block)]
     ];
+    this.pushed_blocks = [];
     this.chute = Object.create(chute).init();
     this.cursor = Object.create(cursor).init();
     return this;
   };
 
   board.keyPressed = function(code, event) {
+    // 'e' key pressed
     if (code == 101) {
       if (this.columns[this.cursor.x - 1].length > 6 - this.cursor.y) {
-        this.columns[this.cursor.x - 1][6 - this.cursor.y].push();
+        var b = this.columns[this.cursor.x - 1].pop();
+
+        b.gx = this.cursor.x - 1;
+        b.gy = this.cursor.y;
+        b.push();
+        this.pushed_blocks.push(b);
       }
     } else {
       this.cursor.keyPressed(code, event);
@@ -30,6 +37,7 @@
   };
 
   board.draw = function(offset_x, offset_y) {
+    // create a window around the gem board
     core.ctx.save();
     core.ctx.beginPath();
     core.ctx.rect(
@@ -37,6 +45,8 @@
       500, 700
     );
     core.ctx.clip();
+
+    // draw gems in play
     for (var i = 0, l = this.columns.length; i < l; i++) {
       var column = this.columns[i];
       for (var j = 0, ll = column.length; j < ll; j++) {
@@ -47,11 +57,20 @@
       }
     }
 
+    // undo windowing
     core.ctx.restore();
 
     this.chute.draw(offset_x, offset_y);
-
     this.cursor.draw(offset_x, offset_y);
+
+    // animating pushed blocks
+    for (var i = 0, l = this.pushed_blocks.length; i < l; i++) {
+      var b = this.pushed_blocks[i];
+      b.draw(
+        offset_x + 110 + b.gx * BLOCK_SIZE,
+        offset_y + b.gy * BLOCK_SIZE
+      );
+    }
   };
 
   board.update = function(dt){
@@ -62,6 +81,10 @@
       for (var j = 0, ll = column.length; j < ll; j++) {
         column[j].update(dt);
       }
+    }
+
+    for (var i = 0, l = this.pushed_blocks.length; i < l; i++) {
+      this.pushed_blocks[i].update(dt);
     }
   };
 
