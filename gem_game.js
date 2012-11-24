@@ -48,6 +48,7 @@ function step(time) {
   core.update(dt);
   core.draw();
   requestAnimationFrame(step);
+  start = time;
 }
 requestAnimationFrame(step);
 

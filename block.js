@@ -13,7 +13,7 @@
 
   block.push = function(){
     this.dy = 0;
-    this.vy = 1/1000;
+    this.vy = 1.5;
     this.update = this.update_moving;
     this.draw = this.draw_moving;
   };
