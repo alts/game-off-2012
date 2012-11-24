@@ -90,7 +90,7 @@
 
   cursor.update = function(dt){
     // r -> r,g -> g -> g,b -> b -> b,r -> r
-    this.t = (this.t + 1) % 120;
+    this.t = (this.t + dt/20) % 120;
   };
 
   return cursor;
