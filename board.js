@@ -83,8 +83,22 @@
       }
     }
 
+    // determine which blocks have passed out of sight
+    var expired_index = null;
     for (var i = 0, l = this.pushed_blocks.length; i < l; i++) {
-      this.pushed_blocks[i].update(dt);
+      var b = this.pushed_blocks[i];
+      b.update(dt);
+
+      if (b.dy > -BLOCK_SIZE * 8) {
+        break;
+      }
+
+      expired_index = i;
+    }
+
+    // clear all those beyond sight
+    if (expired_index !== null) {
+      this.pushed_blocks.splice(0, expired_index + 1);
     }
   };
 
