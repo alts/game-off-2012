@@ -8,6 +8,9 @@
     for (var i = 0; i < 8; i++) {
       this.actions.push(Object.create(push_block));
     }
+
+    this.drop_offset = 0;
+
     return this;
   };
 
@@ -22,7 +25,7 @@
     for (var i = 0, l = this.actions.length; i < l; i++) {
       this.actions[l - i - 1].draw(
         offset_x,
-        offset_y + (i - 1) * BLOCK_SIZE
+        offset_y + (i - 1) * BLOCK_SIZE + this.drop_offset
       );
     }
 
@@ -37,6 +40,17 @@
 
   chute.spendAction = function(){
     this.actions.shift();
+  };
+
+  chute.update = function(dt){
+    if (this.actions.length < 8) {
+      // one block length in one half second
+      this.drop_offset += BLOCK_SIZE * dt / 500
+      if (this.drop_offset >= BLOCK_SIZE) {
+        this.drop_offset = 0;
+        this.actions.push(Object.create(push_block));
+      }
+    }
   };
 
   return chute;

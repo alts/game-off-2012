@@ -76,7 +76,9 @@
 
   board.update = function(dt){
     this.cursor.update(dt);
+    this.chute.update(dt);
 
+    // update each block
     for (var i = 0, l = this.columns.length; i < l; i++) {
       var column = this.columns[i];
       for (var j = 0, ll = column.length; j < ll; j++) {
