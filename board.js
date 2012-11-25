@@ -30,6 +30,7 @@
         b.gy = this.cursor.y;
         b.push();
         this.pushed_blocks.push(b);
+        this.chute.spendAction();
       }
     } else {
       this.cursor.keyPressed(code, event);
