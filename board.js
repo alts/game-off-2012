@@ -33,12 +33,10 @@
 
   board.keyPressed = function(code, event) {
     // 'e' key pressed
-    if (code == 101) {
-      if (this.chute.ready) {
-        var action = this.chute.currentAction();
-        if (action === 'push') {
-          this.takePushAction();
-        }
+    if (code == 101 && this.chute.ready) {
+      var action = this.chute.currentAction();
+      if (action === 'push') {
+        this.takePushAction();
       }
     } else {
       this.cursor.keyPressed(code, event);
