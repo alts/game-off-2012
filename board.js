@@ -23,14 +23,16 @@
   board.keyPressed = function(code, event) {
     // 'e' key pressed
     if (code == 101) {
-      if (this.columns[this.cursor.x - 1].length > 6 - this.cursor.y) {
-        var b = this.columns[this.cursor.x - 1].pop();
+      if (this.chute.ready) {
+        if (this.columns[this.cursor.x - 1].length > 6 - this.cursor.y) {
+          var b = this.columns[this.cursor.x - 1].pop();
 
-        b.gx = this.cursor.x - 1;
-        b.gy = this.cursor.y;
-        b.push();
-        this.pushed_blocks.push(b);
-        this.chute.spendAction();
+          b.gx = this.cursor.x - 1;
+          b.gy = this.cursor.y;
+          b.push();
+          this.pushed_blocks.push(b);
+          this.chute.spendAction();
+        }
       }
     } else {
       this.cursor.keyPressed(code, event);

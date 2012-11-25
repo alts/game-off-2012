@@ -10,6 +10,7 @@
     }
 
     this.drop_offset = 0;
+    this.ready = true;
 
     return this;
   };
@@ -40,6 +41,7 @@
 
   chute.spendAction = function(){
     this.actions.shift();
+    this.ready = false;
   };
 
   chute.update = function(dt){
@@ -49,6 +51,7 @@
       if (this.drop_offset >= BLOCK_SIZE) {
         this.drop_offset = 0;
         this.actions.push(Object.create(push_block));
+        this.ready = true;
       }
     }
   };
