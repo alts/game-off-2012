@@ -54,7 +54,7 @@
   };
 
   chute.currentAction = function(){
-    return this.actions[0];
+    return this.actions[0].type;
   };
 
   return chute;

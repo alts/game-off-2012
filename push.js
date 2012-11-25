@@ -2,6 +2,8 @@
   var block = require('block.js'),
       push = Object.create(block);
 
+  push.type = 'push';
+
   push.setFillStyle = function(){
     core.ctx.fillStyle = 'rgb(128, 0, 255)';
   };
