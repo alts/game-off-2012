@@ -13,7 +13,7 @@
 
   chute.draw = function(offset_x, offset_y){
     for (var i = 0, l = this.actions.length; i < l; i++) {
-      this.actions[i].draw(offset_x, offset_y + i * BLOCK_SIZE);
+      this.actions[l - i - 1].draw(offset_x, offset_y + i * BLOCK_SIZE);
     }
 
     core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
