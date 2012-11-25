@@ -53,5 +53,9 @@
     }
   };
 
+  chute.currentAction = function(){
+    return this.actions[0];
+  };
+
   return chute;
 })();
