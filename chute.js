@@ -30,11 +30,27 @@
       );
     }
 
-    core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    core.ctx.fillRect(
-      offset_x, offset_y,
-      BLOCK_SIZE, 6 * BLOCK_SIZE
+    core.ctx.fillStyle = 'rgb(0, 0, 0)';
+    core.ctx.beginPath();
+    core.ctx.moveTo(offset_x, offset_y);
+    core.ctx.lineTo(offset_x + BLOCK_SIZE, offset_y);
+    core.ctx.lineTo(
+      offset_x + BLOCK_SIZE,
+      offset_y + 6 * BLOCK_SIZE
     );
+    core.ctx.lineTo(
+      offset_x + BLOCK_SIZE - 10,
+      offset_y + 6 * BLOCK_SIZE
+    );
+    core.ctx.lineTo(
+      offset_x + BLOCK_SIZE - 10,
+      offset_y + 10
+    );
+    core.ctx.lineTo(offset_x + 10, offset_y + 10);
+    core.ctx.lineTo(offset_x + 10, offset_y + 6 * BLOCK_SIZE);
+    core.ctx.lineTo(offset_x, offset_y + 6 * BLOCK_SIZE);
+    core.ctx.closePath();
+    core.ctx.fill();
 
     core.ctx.restore();
   };
