@@ -78,6 +78,27 @@
         offset_y + b.gy * BLOCK_SIZE
       );
     }
+
+    var action = this.chute.currentAction();
+    if (action === 'push') {
+      this.drawPushHints(offset_x, offset_y);
+    }
+  };
+
+  board.drawPushHints = function(offset_x, offset_y){
+    core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    // draw unpushable gems
+    for (var i = 0, l = this.columns.length; i < l; i++) {
+      var height = this.columns[i].length;
+      if (height > 1) {
+        core.ctx.fillRect(
+          offset_x + 110 + i * BLOCK_SIZE,
+          offset_y + (8 - height) * BLOCK_SIZE,
+          BLOCK_SIZE,
+          (height - 1) * BLOCK_SIZE
+        );
+      }
+    }
   };
 
   board.update = function(dt){
