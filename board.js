@@ -21,10 +21,11 @@
   };
 
   board.takePushAction = function(){
-    if (this.columns[this.cursor.x - 1].length > 6 - this.cursor.y) {
-      var b = this.columns[this.cursor.x - 1].pop();
-      b.gx = this.cursor.x - 1;
-      b.gy = this.cursor.y;
+    var cursor = this.cursor;
+    if (this.columns[cursor.x - 1].length === 7 - cursor.y) {
+      var b = this.columns[cursor.x - 1].pop();
+      b.gx = cursor.x - 1;
+      b.gy = cursor.y;
       b.push();
       this.pushed_blocks.push(b);
       this.chute.spendAction();
