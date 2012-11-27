@@ -8,8 +8,8 @@
 
   board.init = function(){
     this.columns = [
+      [],
       [Object.create(block)],
-      [Object.create(block),Object.create(block)],
       [],
       [Object.create(block),Object.create(block),Object.create(block)],
       [Object.create(block)]
@@ -83,12 +83,14 @@
     var action = this.chute.currentAction();
     if (action === 'push') {
       this.drawPushHints(offset_x, offset_y);
+    } else if (action === 'merge') {
+      this.drawMergeHints(offset_x, offset_y);
     }
   };
 
   board.drawPushHints = function(offset_x, offset_y){
     core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    // draw unpushable gems
+    // tint unpushable gems
     for (var i = 0, l = this.columns.length; i < l; i++) {
       var height = this.columns[i].length;
       if (height > 1) {
@@ -97,6 +99,28 @@
           offset_y + (8 - height) * BLOCK_SIZE,
           BLOCK_SIZE,
           (height - 1) * BLOCK_SIZE
+        );
+      }
+    }
+  };
+
+  board.drawMergeHints = function(offset_x, offset_y){
+    core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    var columns = this.columns,
+        max_columns = this.columns.length,
+        last_empty = -1;
+
+    for (var i = 0, l = this.columns.length; i < l; i++) {
+      var unmergeable = this.columns[i].length === 1 &&
+          (i === 0 || this.columns[i - 1].length === 0) &&
+          (i === l - 1 || this.columns[i + 1].length === 0);
+
+      if (unmergeable) {
+        core.ctx.fillRect(
+          offset_x + 110 + i * BLOCK_SIZE,
+          offset_y + 6 * BLOCK_SIZE,
+          BLOCK_SIZE,
+          BLOCK_SIZE
         );
       }
     }

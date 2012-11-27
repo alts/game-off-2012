@@ -1,12 +1,26 @@
 (function (){
-  var push_block = require('push.js');
+  var push_block = require('push.js'),
+      merge_block = require('merge.js');
   var chute = {},
       BLOCK_SIZE = 100;
+
+  var createBlock = function(){
+    var test = Math.random(),
+        proto = null;
+
+    if (test < 0.5) {
+      proto = push_block;
+    } else {
+      proto = merge_block;
+    }
+
+    return Object.create(proto);
+  };
 
   chute.init = function(){
     this.actions = [];
     for (var i = 0; i < 7; i++) {
-      this.actions.push(Object.create(push_block));
+      this.actions.push(createBlock());
     }
 
     this.drop_offset = 0;
