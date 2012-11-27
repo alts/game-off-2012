@@ -5,7 +5,7 @@
 
   chute.init = function(){
     this.actions = [];
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < 7; i++) {
       this.actions.push(Object.create(push_block));
     }
 
