@@ -9,9 +9,9 @@
   board.init = function(){
     this.columns = [
       [Object.create(block)],
-      [Object.create(block)],
+      [Object.create(block),Object.create(block)],
       [],
-      [Object.create(block)],
+      [Object.create(block),Object.create(block),Object.create(block)],
       [Object.create(block)]
     ];
     this.pushed_blocks = [];
