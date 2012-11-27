@@ -9,7 +9,8 @@ var canvas = document.getElementById('canvas');
 
 var core = {
   scene: null,
-  ctx: canvas.getContext('2d')
+  ctx: canvas.getContext('2d'),
+  running: true
 };
 
 var play_scene = require('play_scene.js');
@@ -30,8 +31,15 @@ core.draw = function() {
 };
 
 core.keyPressed = function(event) {
+  var code = event.keyCode || event.charCode;
+
+  // b key pressed
+  if (code === 98) {
+    core.running = false;
+  }
+
   if (this.scene) {
-    this.scene.keyPressed(event.keyCode || event.charCode, event);
+    this.scene.keyPressed(code, event);
   }
 };
 
@@ -41,14 +49,16 @@ core.registerScene = function(scene) {
 
 var start = Date.now();
 function step(time) {
-  var dt = time - start;
-  core.ctx.clearRect(0, 0, 1300, 720);
-  core.ctx.fillStyle = '#666';
-  core.ctx.fillRect(0, 0, 1300, 720);
-  core.update(dt);
-  core.draw();
-  requestAnimationFrame(step);
-  start = time;
+  if (core.running) {
+    var dt = time - start;
+    core.ctx.clearRect(0, 0, 1300, 720);
+    core.ctx.fillStyle = '#666';
+    core.ctx.fillRect(0, 0, 1300, 720);
+    core.update(dt);
+    core.draw();
+    requestAnimationFrame(step);
+    start = time;
+  }
 }
 requestAnimationFrame(step);
 
