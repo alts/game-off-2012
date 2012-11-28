@@ -173,6 +173,12 @@
         );
       }
     }
+
+    // chute cannot be pushed
+    core.ctx.fillRect(
+      offset_x, offset_y,
+      BLOCK_SIZE, 6 * BLOCK_SIZE
+    );
   };
 
   board.drawMergeHintsStage1 = function(offset_x, offset_y){
@@ -192,6 +198,7 @@
       }
     }
 
+    // chute cannot be merged
     core.ctx.fillRect(
       offset_x, offset_y,
       BLOCK_SIZE, 6 * BLOCK_SIZE
@@ -272,6 +279,7 @@
       BLOCK_SIZE
     );
 
+    // chute cannot be merged
     core.ctx.fillRect(
       offset_x, offset_y,
       BLOCK_SIZE, 6 * BLOCK_SIZE
