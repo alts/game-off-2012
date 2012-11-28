@@ -80,7 +80,7 @@
       this.drop_offset += BLOCK_SIZE * dt / 500
       if (this.drop_offset >= BLOCK_SIZE) {
         this.drop_offset = 0;
-        this.actions.push(Object.create(push_block));
+        this.actions.push(createBlock());
         this.ready = true;
       }
     }
