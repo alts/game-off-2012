@@ -8,18 +8,32 @@
 
   board.init = function(){
     this.columns = [
-      [],
-      [Object.create(block)],
-      [],
-      [Object.create(block),Object.create(block),Object.create(block)],
-      [Object.create(block)]
+      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)],
+      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)],
+      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)],
+      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)],
+      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)]
     ];
     this.pushed_blocks = [];
     this.chute = Object.create(chute).init();
     this.cursor = Object.create(cursor).init();
+
+    this.rememberCursor = null;
     return this;
   };
 
+  // UNDO
+  board.undoMerge = function(){
+    this.rememberCursor = null;
+    this.drawMergeHints = this.drawMergeHintsStage1;
+    this.keyPressed = this.baseKeyPressed;
+    this.undo = this.baseUndo;
+  };
+
+  board.baseUndo = function(){};
+  board.undo = board.baseUndo;
+
+  // ACTIONS
   board.takePushAction = function(){
     var cursor = this.cursor;
     if (this.columns[cursor.x - 1].length === 7 - cursor.y) {
@@ -32,18 +46,69 @@
     }
   };
 
-  board.keyPressed = function(code, event) {
+  board.takeMergeAction1 = function(){
+    var cursor = this.cursor;
+    var valid_click = cursor.x > 0 &&
+        this.columns[cursor.x - 1].length > 6 - cursor.y &&
+        !this.isColumnUnmergeable(cursor.x - 1);
+
+    if (valid_click){
+      this.rememberCursor = [this.cursor.x, this.cursor.y];
+      this.drawMergeHints = this.drawMergeHintsStage2;
+      this.keyPressed = this.mergeKeyPressed;
+      this.undo = this.undoMerge;
+    }
+  };
+
+  board.takeMergeAction2 = function(){
+    var cursor = this.cursor,
+        old_x = this.rememberCursor[0],
+        old_y = this.rememberCursor[1];
+
+    var valid_click = cursor.x > 0 &&
+        1 == Math.abs(cursor.x - old_x) + Math.abs(cursor.y - old_y) &&
+        (6 - cursor.y) < this.columns[cursor.x - 1].length;
+
+    if (valid_click) {
+      this.columns[old_x - 1].splice(6 - old_y, 1);
+
+      this.rememberCursor = null;
+      this.drawMergeHints = this.drawMergeHintsStage1;
+      this.keyPressed = this.baseKeyPressed;
+      this.undo = this.baseUndo;
+      this.chute.spendAction();
+    };
+  };
+
+
+  // KEYPRESSED
+  // for second half of merge operation
+  board.mergeKeyPressed = function(code, event) {
+    if (code == 101) {
+      this.takeMergeAction2();
+    } else {
+      this.cursor.keyPressed(code, event);
+    }
+  }
+
+  board.baseKeyPressed = function(code, event) {
     // 'e' key pressed
     if (code == 101 && this.chute.ready) {
       var action = this.chute.currentAction();
       if (action === 'push') {
         this.takePushAction();
+      } else if (action === 'merge') {
+        this.takeMergeAction1();
       }
     } else {
       this.cursor.keyPressed(code, event);
     }
   };
 
+  board.keyPressed = board.baseKeyPressed;
+
+
+  // DRAW
   board.draw = function(offset_x, offset_y) {
     // create a window around the gem board
     core.ctx.save();
@@ -80,11 +145,13 @@
       );
     }
 
-    var action = this.chute.currentAction();
-    if (action === 'push') {
-      this.drawPushHints(offset_x, offset_y);
-    } else if (action === 'merge') {
-      this.drawMergeHints(offset_x, offset_y);
+    if (this.chute.ready) {
+      var action = this.chute.currentAction();
+      if (action === 'push') {
+        this.drawPushHints(offset_x, offset_y);
+      } else if (action === 'merge') {
+        this.drawMergeHints(offset_x, offset_y);
+      }
     }
   };
 
@@ -104,18 +171,14 @@
     }
   };
 
-  board.drawMergeHints = function(offset_x, offset_y){
+  board.drawMergeHintsStage1 = function(offset_x, offset_y){
     core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
     var columns = this.columns,
         max_columns = this.columns.length,
         last_empty = -1;
 
     for (var i = 0, l = this.columns.length; i < l; i++) {
-      var unmergeable = this.columns[i].length === 1 &&
-          (i === 0 || this.columns[i - 1].length === 0) &&
-          (i === l - 1 || this.columns[i + 1].length === 0);
-
-      if (unmergeable) {
+      if (this.isColumnUnmergeable(i)) {
         core.ctx.fillRect(
           offset_x + 110 + i * BLOCK_SIZE,
           offset_y + 6 * BLOCK_SIZE,
@@ -124,8 +187,105 @@
         );
       }
     }
+
+    core.ctx.fillRect(
+      offset_x, offset_y,
+      BLOCK_SIZE, 6 * BLOCK_SIZE
+    );
   };
 
+  board.drawMergeHintsStage2 = function(offset_x, offset_y){
+    core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    var cursor_x = this.rememberCursor[0],
+        cursor_y = this.rememberCursor[1];
+
+    for (var i = 0, l = this.columns.length; i < l; i++) {
+      var column = this.columns[i];
+
+      if (column.length > 0) {
+        if (i < cursor_x - 2 || i > cursor_x) {
+          // columns entirely inaccessible
+          core.ctx.fillRect(
+            offset_x + 110 + i * BLOCK_SIZE,
+            offset_y + (7 - column.length) * BLOCK_SIZE,
+            BLOCK_SIZE,
+            column.length * BLOCK_SIZE
+          );
+
+        } else if (i === cursor_x - 1) {
+          // column of the cursor
+
+          // start filling two below cursor mark
+          if (2 < 7 - cursor_y){
+            core.ctx.fillRect(
+              offset_x + 110 + i * BLOCK_SIZE,
+              offset_y + (cursor_y + 2) * BLOCK_SIZE,
+              BLOCK_SIZE,
+              (6 - cursor_y) * BLOCK_SIZE
+            );
+          }
+
+          // fill 2 above cursor mark
+          if (column.length > 8 - cursor_y) {
+            core.ctx.fillRect(
+              offset_x + 110 + i * BLOCK_SIZE,
+              offset_y + (7 - column.length) * BLOCK_SIZE,
+              BLOCK_SIZE,
+              (column.length - 8 + cursor_y) * BLOCK_SIZE
+            );
+          }
+
+        } else {
+          // neighbor columns of the cursor
+
+          if (1 < 7 - cursor_y){
+            core.ctx.fillRect(
+              offset_x + 110 + i * BLOCK_SIZE,
+              offset_y + (cursor_y + 1) * BLOCK_SIZE,
+              BLOCK_SIZE,
+              (7 - cursor_y) * BLOCK_SIZE
+            );
+          }
+
+          // fill above cursor mark
+          if (column.length > 7 - cursor_y) {
+            core.ctx.fillRect(
+              offset_x + 110 + i * BLOCK_SIZE,
+              offset_y + (7 - column.length) * BLOCK_SIZE,
+              BLOCK_SIZE,
+              (column.length - 7 + cursor_y) * BLOCK_SIZE
+            );
+          }
+        }
+      }
+    }
+
+    // fill cursor point
+    core.ctx.fillRect(
+      offset_x + 110 + (cursor_x - 1) * BLOCK_SIZE,
+      offset_y + cursor_y * BLOCK_SIZE,
+      BLOCK_SIZE,
+      BLOCK_SIZE
+    );
+
+    core.ctx.fillRect(
+      offset_x, offset_y,
+      BLOCK_SIZE, 6 * BLOCK_SIZE
+    );
+  };
+
+  board.drawMergeHints = board.drawMergeHintsStage1;
+
+
+  // UTIL
+  board.isColumnUnmergeable = function(i){
+    var l = this.columns.length;
+    return this.columns[i].length === 1 &&
+      (i === 0 || this.columns[i - 1].length === 0) &&
+      (i === l - 1 || this.columns[i + 1].length === 0);
+  };
+
+  // UPDATES
   board.update = function(dt){
     this.cursor.update(dt);
     this.chute.update(dt);
