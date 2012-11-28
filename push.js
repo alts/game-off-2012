@@ -5,7 +5,7 @@
   push.type = 'push';
 
   push.setFillStyle = function(){
-    core.ctx.fillStyle = 'rgb(128, 0, 255)';
+    core.ctx.fillStyle = 'rgb(212, 0, 255)';
   };
 
   return push;

@@ -5,7 +5,7 @@
   merge.type = 'merge';
 
   merge.setFillStyle = function(){
-    core.ctx.fillStyle = 'rgb(255, 128, 0)';
+    core.ctx.fillStyle = 'rgb(255, 85, 0)';
   };
 
   return merge;
