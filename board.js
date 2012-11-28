@@ -8,11 +8,11 @@
 
   board.init = function(){
     this.columns = [
-      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)],
-      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)],
-      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)],
-      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)],
-      [Object.create(block),Object.create(block),Object.create(block),Object.create(block),Object.create(block)]
+      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()],
+      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()],
+      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()],
+      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()],
+      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()]
     ];
     this.pushed_blocks = [];
     this.chute = Object.create(chute).init();

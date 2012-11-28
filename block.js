@@ -4,6 +4,9 @@
       BLOCK_QUAD = 25;
 
   block.init = function(){
+    this.dy = 0;
+    this.vx = 0;
+    this.vy = 0;
     return this;
   };
 
@@ -12,14 +15,18 @@
   };
 
   block.push = function(){
-    this.dy = 0;
-    this.vy = 1.5;
+    this.vy = -1.5;
     this.update = this.update_moving;
     this.draw = this.draw_moving;
   };
 
   block.update_moving = function(dt){
-    this.dy -= this.vy * dt;
+    if (this.vx) {
+    }
+
+    if (this.vy) {
+      this.dy += this.vy * dt;
+    }
   };
 
   block.update_fixed = function(dt){
