@@ -123,6 +123,24 @@
     );
     core.ctx.clip();
 
+    // draw danger line
+    core.ctx.beginPath();
+    var line_y = offset_y + 2 * BLOCK_SIZE,
+        line_x = offset_x + 110,
+        x_limit = offset_x + 100 + 5 * BLOCK_SIZE;
+
+    core.ctx.strokeStyle = 'rgb(0, 0, 0)';
+    core.ctx.moveTo(line_x, line_y);
+    line_x += 15;
+    core.ctx.lineTo(line_x, line_y);
+    while (line_x < x_limit) {
+      line_x += 20;
+      core.ctx.moveTo(line_x, line_y);
+      line_x += 30;
+      core.ctx.lineTo(line_x, line_y);
+    }
+    core.ctx.stroke();
+
     // draw gems in play
     for (var i = 0, l = this.columns.length; i < l; i++) {
       var column = this.columns[i];
