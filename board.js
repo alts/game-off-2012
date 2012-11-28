@@ -155,6 +155,8 @@
         this.drawPushHints(offset_x, offset_y);
       } else if (action === 'merge') {
         this.drawMergeHints(offset_x, offset_y);
+      } else if (action === 'clone') {
+        this.drawCloneHintsStage1(offset_x, offset_y);
       }
     }
   };
@@ -180,6 +182,32 @@
       BLOCK_SIZE, 6 * BLOCK_SIZE
     );
   };
+
+
+  board.drawCloneHintsStage1 = function(offset_x, offset_y){
+    core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+
+    // tint uncloneable gems
+    for (var i = 0, l = this.columns.length; i < l; i++){
+      var height = this.columns[i].length;
+      if (height >= 5) {
+        var distance = Math.min(
+          i == 0 && 5 || this.columns[i - 1].length,
+          i == l -1 && 5 || this.columns[i + 1].length
+        );
+
+        if (distance > 0) {
+          core.ctx.fillRect(
+            offset_x + 110 + i * BLOCK_SIZE,
+            offset_y + (7 - distance) * BLOCK_SIZE,
+            BLOCK_SIZE,
+            distance * BLOCK_SIZE
+          );
+        }
+      }
+    }
+  };
+
 
   board.drawMergeHintsStage1 = function(offset_x, offset_y){
     core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
