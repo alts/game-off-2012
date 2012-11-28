@@ -1,6 +1,8 @@
 (function (){
   var push_block = require('push.js'),
-      merge_block = require('merge.js');
+      merge_block = require('merge.js'),
+      clone_block = require('clone.js');
+
   var chute = {},
       BLOCK_SIZE = 100;
 
@@ -8,10 +10,14 @@
     var test = Math.random(),
         proto = null;
 
-    if (test < 0.5) {
+    if (test < 0.25) {
       proto = push_block;
-    } else {
+    } else if (test < 0.5) {
       proto = merge_block;
+    } else if (test < 0.75) {
+      proto = clone_block;
+    } else {
+      proto = push_block;
     }
 
     return Object.create(proto);
