@@ -70,7 +70,11 @@
         (6 - cursor.y) < this.columns[cursor.x - 1].length;
 
     if (valid_click) {
+      this.columns[cursor.x - 1][6 - cursor.y].merge(
+        this.columns[old_x - 1][6 - old_y]
+      );
       this.columns[old_x - 1].splice(6 - old_y, 1);
+
 
       this.rememberCursor = null;
       this.drawMergeHints = this.drawMergeHintsStage1;

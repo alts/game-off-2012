@@ -11,13 +11,19 @@
   };
 
   block.setFillStyle = function(){
-    core.ctx.fillStyle = "rgb(100, 0, 0)";
+    core.ctx.fillStyle = 'rgb(100, 0, 0)';
   };
 
   block.push = function(){
     this.vy = -1.5;
     this.update = this.update_moving;
     this.draw = this.draw_moving;
+  };
+
+  block.merge = function(other_block){
+    this.setFillStyle = function(){
+      core.ctx.fillStyle = 'rgb(100, 100, 0)';
+    };
   };
 
   block.update_moving = function(dt){
@@ -50,7 +56,7 @@
       BLOCK_SIZE
     );
 
-    core.ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+    core.ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
     core.ctx.beginPath();
     core.ctx.moveTo(start_x, start_y);
     core.ctx.lineTo(start_x + BLOCK_SIZE, start_y);
