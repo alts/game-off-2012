@@ -1,5 +1,5 @@
 (function() {
-  var block = require('block.js');
+  var gem = require('gem.js');
   var push_block = require('push.js');
   var cursor = require('cursor.js');
   var board = {},
@@ -8,11 +8,11 @@
 
   board.init = function(){
     this.columns = [
-      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()],
-      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()],
-      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()],
-      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()],
-      [Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init(),Object.create(block).init()]
+      [Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init()],
+      [Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init()],
+      [Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init()],
+      [Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init()],
+      [Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init(),Object.create(gem).init()]
     ];
     this.pushed_blocks = [];
     this.chute = Object.create(chute).init();
