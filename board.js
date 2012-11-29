@@ -61,10 +61,11 @@
     // currently does not handle cloning in the chute
     var valid_click = cursor.y > 1 &&
         ((column.length < 5 && column.length > 6 - cursor.y) ||
-        (cursor.x > 1 && this.columns[cursor.x - 2].length < 6 - cursor.y) ||
-        (cursor.x < 5 && this.columns[cursor.x].length < 6 - cursor.y));
+        (cursor.x > 1 && this.columns[cursor.x - 2].length === 6 - cursor.y) ||
+        (cursor.x < 5 && this.columns[cursor.x].length === 6 - cursor.y));
 
     if (valid_click) {
+      console.log('yes');
       this.rememberCursor = [cursor.x, cursor.y];
       this.drawCloneHints = this.drawCloneHintsStage2;
       this.keyPressed = this.cloneKeyPressed;
@@ -281,10 +282,10 @@
     for (var i = 0, l = this.columns.length; i < l; i++){
       var size = this.columns[i].length;
       if (i === cursor_x - 1) {
+        core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         // same column as selected
         if (size >= 5) {
           // column is full
-          core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
           core.ctx.fillRect(
             offset_x + 110 + i * BLOCK_SIZE,
             offset_y + (7 - size) * BLOCK_SIZE,
@@ -293,9 +294,48 @@
           );
         } else {
           // column has space
+          if (7 - cursor_y === size) {
+            // selected tip
+            core.ctx.fillRect(
+              offset_x + 110 + i * BLOCK_SIZE,
+              offset_y + (8 - size) * BLOCK_SIZE,
+              BLOCK_SIZE,
+              (size - 1) * BLOCK_SIZE
+            );
+          } else {
+            core.ctx.fillRect(
+              offset_x + 110 + i * BLOCK_SIZE,
+              offset_y + (7 - size) * BLOCK_SIZE,
+              BLOCK_SIZE,
+              (size - 7 + cursor_y) * BLOCK_SIZE
+            );
+            core.ctx.fillRect(
+              offset_x + 110 + i * BLOCK_SIZE,
+              offset_y + (cursor_y + 1) * BLOCK_SIZE,
+              BLOCK_SIZE,
+              (7 - cursor_y) * BLOCK_SIZE
+            );
+          }
         }
       } else if (Math.abs(i - cursor_x + 1) === 1) {
         // neightbor column
+        if (size == 6 - cursor_y) {
+          // neighbor is open
+          core.ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+          core.ctx.fillRect(
+            offset_x + 110 + i * BLOCK_SIZE,
+            offset_y + (6 - size) * BLOCK_SIZE,
+            BLOCK_SIZE,
+            BLOCK_SIZE
+          );
+        }
+        core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        core.ctx.fillRect(
+          offset_x + 110 + i * BLOCK_SIZE,
+          offset_y + (7 - size) * BLOCK_SIZE,
+          BLOCK_SIZE,
+          size * BLOCK_SIZE
+        );
       } else {
         core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         core.ctx.fillRect(
