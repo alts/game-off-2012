@@ -30,6 +30,13 @@
     this.undo = this.baseUndo;
   };
 
+  board.undoClone = function(){
+    this.rememberCursor = null;
+    this.drawCloneHints = this.drawCloneHintsStage1;
+    this.keyPressed = this.baseKeyPressed;
+    this.undo = this.baseUndo;
+  };
+
   board.baseUndo = function(){};
   board.undo = board.baseUndo;
 
@@ -45,6 +52,26 @@
       this.chute.spendAction();
     }
   };
+
+
+  board.takeCloneAction1 = function(){
+    var cursor = this.cursor,
+        column = this.columns[cursor.x - 1];
+
+    // currently does not handle cloning in the chute
+    var valid_click = cursor.y > 1 &&
+        ((column.length < 5 && column.length > 6 - cursor.y) ||
+        (cursor.x > 1 && this.columns[cursor.x - 2].length < 6 - cursor.y) ||
+        (cursor.x < 5 && this.columns[cursor.x].length < 6 - cursor.y));
+
+    if (valid_click) {
+      this.rememberCursor = [cursor.x, cursor.y];
+      this.drawCloneHints = this.drawCloneHintsStage2;
+      this.keyPressed = this.cloneKeyPressed;
+      this.undo = this.undoClone;
+    }
+  };
+
 
   board.takeMergeAction1 = function(){
     var cursor = this.cursor;
@@ -103,6 +130,8 @@
         this.takePushAction();
       } else if (action === 'merge') {
         this.takeMergeAction1();
+      } else if (action === 'clone') {
+        this.takeCloneAction1();
       }
     } else {
       this.cursor.keyPressed(code, event);
@@ -174,7 +203,7 @@
       } else if (action === 'merge') {
         this.drawMergeHints(offset_x, offset_y);
       } else if (action === 'clone') {
-        this.drawCloneHintsStage1(offset_x, offset_y);
+        this.drawCloneHints(offset_x, offset_y);
       }
     }
   };
@@ -209,22 +238,78 @@
     for (var i = 0, l = this.columns.length; i < l; i++){
       var height = this.columns[i].length;
       if (height >= 5) {
-        var distance = Math.min(
-          i == 0 && 5 || this.columns[i - 1].length,
-          i == l -1 && 5 || this.columns[i + 1].length
-        );
+        var left_distance = i == 0 && 5 || this.columns[i - 1].length,
+            right_distance = i == l -1 && 5 || this.columns[i + 1].length,
+            min_distance = Math.min(left_distance, right_distance),
+            max_distance = Math.max(left_distance, right_distance);
 
-        if (distance > 0) {
+        if (min_distance > 0) {
           core.ctx.fillRect(
             offset_x + 110 + i * BLOCK_SIZE,
-            offset_y + (7 - distance) * BLOCK_SIZE,
+            offset_y + (7 - min_distance) * BLOCK_SIZE,
             BLOCK_SIZE,
-            distance * BLOCK_SIZE
+            min_distance * BLOCK_SIZE
+          );
+        }
+
+        if (min_distance < max_distance - 1) {
+          core.ctx.fillRect(
+            offset_x + 110 + i * BLOCK_SIZE,
+            offset_y + (7 - max_distance) * BLOCK_SIZE,
+            BLOCK_SIZE,
+            (max_distance - min_distance - 1) * BLOCK_SIZE
+          );
+        }
+
+        if (max_distance < height - 1) {
+          core.ctx.fillRect(
+            offset_x + 110 + i * BLOCK_SIZE,
+            offset_y + (7 - height) * BLOCK_SIZE,
+            BLOCK_SIZE,
+            (height - max_distance - 1) * BLOCK_SIZE
           );
         }
       }
     }
   };
+
+
+  board.drawCloneHintsStage2 = function(offset_x, offset_y){
+    var cursor_x = this.rememberCursor[0],
+        cursor_y = this.rememberCursor[1];
+
+    for (var i = 0, l = this.columns.length; i < l; i++){
+      var size = this.columns[i].length;
+      if (i === cursor_x - 1) {
+        // same column as selected
+        if (size >= 5) {
+          // column is full
+          core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+          core.ctx.fillRect(
+            offset_x + 110 + i * BLOCK_SIZE,
+            offset_y + (7 - size) * BLOCK_SIZE,
+            BLOCK_SIZE,
+            size * BLOCK_SIZE
+          );
+        } else {
+          // column has space
+        }
+      } else if (Math.abs(i - cursor_x + 1) === 1) {
+        // neightbor column
+      } else {
+        core.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        core.ctx.fillRect(
+          offset_x + 110 + i * BLOCK_SIZE,
+          offset_y + (7 - size) * BLOCK_SIZE,
+          BLOCK_SIZE,
+          size * BLOCK_SIZE
+        );
+      }
+    }
+  };
+
+
+  board.drawCloneHints = board.drawCloneHintsStage1;
 
 
   board.drawMergeHintsStage1 = function(offset_x, offset_y){
